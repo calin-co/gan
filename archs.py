@@ -10,21 +10,21 @@ def discriminator_vanilla(input, im_dim, reuse=False):
     """
     discriminator used for mnist images of 28 x 28
     """
-    if reuse:
-        tf.get_variable_scope().reuse_variables()
-    h0 = tf.layers.dense(input, im_dim*im_dim, tf.nn.relu, name='d0')
-    h1 = tf.layers.dense(h0, 1,  name='d1')
-    prob = tf.sigmoid(h1, 'd2')
-    return prob
+    with tf.variable_scope("discriminator", reuse=reuse):
+        h0 = tf.layers.dense(input, im_dim*im_dim, tf.nn.relu, name='d0')
+        h1 = tf.layers.dense(h0, 1,  name='d1')
+        prob = tf.sigmoid(h1, 'd2')
+        return prob
         
 def generator_vanilla(z, z_dim, im_dim):
     """
     discriminator used for mnist images of 28 x 28
     """
-    h0 = tf.layers.dense(z, z_dim, tf.nn.relu, name='g0')
-    h1 = tf.layers.dense(h0, im_dim*im_dim, name='g1')
-    h2 = tf.sigmoid(h1, name='g2')
-    return h2
+    with tf.variable_scope("generator", reuse=None):
+        h0 = tf.layers.dense(z, z_dim, tf.nn.relu, name='g0')
+        h1 = tf.layers.dense(h0, im_dim*im_dim, name='g1')
+        h2 = tf.sigmoid(h1, name='g2')
+        return h2
 
 
 def generator_conv(z, is_training=None):

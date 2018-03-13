@@ -132,6 +132,35 @@ class DataProvider(object):
         self._curr_batch += 1
         return inputs_batch, targets_batch
     
+    
+class CIFAR10DataProvider(DataProvider):
+    "Data provider for training a gan on cats dogs"
+    def __init__(self, batch_size=100, max_num_batches=-1,
+                 shuffle_order=True, rng=None):
+        
+        data_path = "data_sets/cifar10.npz"
+        loaded = np.load(data_path)
+        inputs, targets = loaded['arr_0'], loaded['arr_1']
+        self.num_classes = 1
+        super(CIFAR10DataProvider, self).__init__(
+            inputs, targets, batch_size, max_num_batches, shuffle_order, rng)
+        
+    def next(self):
+        try:
+            inputs_batch, targets_batch = super(CIFAR10DataProvider, self).next()
+            return inputs_batch, 1 #self.to_one_of_k(targets_batch)
+        except Exception as e:
+           # ignore end of data and start again
+            inputs_batch, targets_batch = super(CIFAR10DataProvider, self).next()
+            return inputs_batch, 1 #self.to_one_of_k(targets_batch)
+    
+    def to_one_of_k(self, int_targets):
+        one_of_k_targets = np.zeros((int_targets.shape[0], self.num_classes))
+        one_of_k_targets[range(int_targets.shape[0]), int_targets] = 1
+        return one_of_k_targets
+      
+    
+    
 class CatsDogsDataProvider(DataProvider):
     "Data provider for training a gan on cats dogs"
     def __init__(self, batch_size=100, max_num_batches=-1,

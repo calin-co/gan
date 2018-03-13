@@ -9,7 +9,7 @@ import models
 if __name__ == '__main__':
     dataset = MNISTDataProvider(batch_size=64)
     
-    steps = {"save": 1000, "sample": 100}
+    steps = {"save": 5000, "sample": 500}
     
     """
     gan = models.MNIST_GAN(
@@ -20,7 +20,7 @@ if __name__ == '__main__':
             z_dim=64,
             im_dim=28,
             steps = steps)
-    """
+    
     gan = models.MNIST_DCGAN(
             model_name="mnist_dcgan",
             batch_size=64,
@@ -29,5 +29,24 @@ if __name__ == '__main__':
             z_dim=64,
             im_dim=28,
             steps = steps)
+
+    gan = models.WGAN_conv(
+            model_name="mnist_wgan_conv",
+            batch_size=64,
+            dataset=dataset,
+            num_iter=100000,
+            z_dim=64,
+            im_dim=28,
+            steps = steps)
+    """
+    gan = models.WGAN_simple(
+        model_name="mnist_wgan_simple",
+        batch_size=64,
+        dataset=dataset,
+        num_iter=100000,
+        z_dim=64,
+        im_dim=28,
+        steps = steps)
+ 
     gan.train()
     
